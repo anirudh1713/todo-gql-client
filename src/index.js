@@ -1,12 +1,33 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+
+const client = new ApolloClient({
+  uri: 'http://localhost:4000',
+  cache: new InMemoryCache({
+    typePolicies: {
+      Query: {
+        fields: {
+          todos: {
+            merge(existing = [], incoming) {
+              return [...incoming]
+            }
+          }
+        }
+      }
+    }
+  }),
+});
+
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <ApolloProvider client={client}>
+      <App />
+    </ApolloProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
